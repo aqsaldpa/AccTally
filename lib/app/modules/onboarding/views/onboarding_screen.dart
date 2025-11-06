@@ -29,11 +29,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         child: Stack(
-          alignment: AlignmentGeometry.center,
+          alignment: AlignmentGeometry.topCenter,
           children: [
-            Image.asset(Assets.images.logo.path, height: 165.h),
             Padding(
-              padding: EdgeInsetsGeometry.only(top: 400.h),
+              padding: EdgeInsetsGeometry.only(top: 225.h),
+              child: Image.asset(Assets.images.logo.path, height: 165.h),
+            ),
+            Padding(
+              padding: EdgeInsetsGeometry.only(top: 375.h),
               child: Column(
                 children: [
                   RichText(

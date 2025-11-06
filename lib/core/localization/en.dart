@@ -1,10 +1,10 @@
 /// English Localization
 const enLocalization = {
-
   // Onboarding Screen
   'appName': 'Acc',
   'appName2': 'Tally',
-  'onboardingSubtitle': 'Track your costs and find your break even point easily.',
+  'onboardingSubtitle':
+      'Track your costs and find your break even point easily.',
   'getStarted': 'Get Started',
 
   // Home Screen
@@ -13,6 +13,9 @@ const enLocalization = {
   'bahasaMelayu': 'Bahasa Melayu',
   'current': 'Current',
   'goodGreeting': 'Good',
+  'morning': 'Morning',
+  'afternoon': 'Afternoon',
+  'evening': 'Evening',
   'breakEvenPoint': 'Break-Even Point',
   'salesVsCost': 'Sales VS Cost',
   'totalBepTarget': 'Total BEP Target',
@@ -33,7 +36,7 @@ const enLocalization = {
   'addNewSales': 'Add New Sales',
   'productName': 'Product Name',
   'price': 'Price',
-  'quantity': 'Quantity (Unit)',
+  'quantity': 'Quantity',
   'total': 'Total',
   'addSale': 'Add Sale',
   'salesSummary': 'Sales Summary',
@@ -43,13 +46,14 @@ const enLocalization = {
   'hintPrice': 'RM 20',
   'hintQuantity': '500',
   'currency': 'RM',
+  'sen': 'sen',
 
   // Enter Cost Screen
   'enterCostTitle': 'Enter Costs',
   'addNewCost': 'Add New Cost',
   'category': 'Category',
   'itemName': 'Item Name',
-  'amount': 'Amount (RM)',
+  'amount': 'Amount',
   'addCost': 'Add Cost',
   'costSummary': 'Cost Summary',
   'rawMaterials': 'Raw Materials',
@@ -68,7 +72,8 @@ const enLocalization = {
   'totalOf': 'Total of',
   'bepUnit': 'BEP (Unit)',
   'youHaveSold': 'You have sold {units} units above the break-even point.',
-  'youNeedToSell': 'You need to sell {units} more units to reach break-even point.',
+  'youNeedToSell':
+      'You need to sell {units} more units to reach break-even point.',
   'formulaDetails': 'Formula Details',
   'fixedCost': 'Fixed Cost',
   'sellingPrice': 'Selling Price / unit',
@@ -79,6 +84,44 @@ const enLocalization = {
   'productNasiAyam': 'Nasi Ayam',
   'productNasiLemak': 'Nasi Lemak',
   'productNasiKuning': 'Nasi Kuning',
+  'noBepCalculationsYet': 'No BEP calculations available',
+  'startByAddingProducts':
+      'Start by adding products and recording costs & sales',
+
+  // Cost & Sales Management
+  'tapManageToAddCategories': 'Tap the manage button to add categories',
+  'startAddingCostsToTrack': 'Start entering costs to track your expenses',
+  'startAddingSalesToTrack': 'Start entering sales to track your revenue',
+  'noRecordsForSelectedFilter': 'No records found for the selected filter',
+  'noCostEntries': 'No cost entries recorded yet',
+  'noCostEntriesForProduct': 'No cost entries for this product',
+  'noSalesEntries': 'No sales entries recorded yet',
+  'noSalesEntriesForProduct': 'No sales entries for this product',
+  'selectProductToViewSummary': 'Select a product to view summary',
+
+  // UI Text Hints and Labels
+  'nameHint': 'Name',
+  'costTypeHint': 'Cost type',
+  'saveButton': 'Save',
+  'tapToViewDetails': 'Tap to view details',
+
+  // Validation & Success Messages
+  'errorTitle': 'Error',
+  'successTitle': 'Success',
+  'pleaseCheckAllFields': 'Please fill all fields',
+  'invalidInput': 'Invalid input',
+  'invalidAmount': 'Invalid amount',
+  'nameIsRequired': 'Name is required',
+  'selectCostType': 'Please select cost type',
+  'costEntryAdded': 'Cost entry added successfully',
+  'saleEntryAdded': 'Sale entry added successfully',
+  'productAdded': 'Product added successfully',
+  'productUpdated': 'Product updated successfully',
+  'productDeleted': 'Product deleted successfully',
+  'categoryAdded': 'Category added successfully',
+  'categoryUpdated': 'Category updated successfully',
+  'categoryDeleted': 'Category deleted successfully',
+  'categoryNameEmpty': 'Category name cannot be empty',
 
   // Data Management Screen
   'dataManagement': 'Management',
@@ -88,22 +131,34 @@ const enLocalization = {
   // Product Management
   'addProduct': 'Add Product',
   'editProduct': 'Edit Product',
+  'name': 'Name',
   'deleteProduct': 'Delete Product',
   'listProduct': 'List Product',
   'productTitle': 'Product',
   'deleteConfirmation': 'Are you sure you want to delete',
   'cancel': 'Cancel',
   'delete': 'Delete',
+  'noProductsAdded': 'No products added yet',
+  'addYourFirstProduct': 'Create your first product to get started',
 
   // Category Management
   'addCategories': 'Add categories',
   'editCategories': 'Edit categories',
   'deleteCategory': 'Delete category',
   'listCategories': 'List Categories',
+  'addCategory': 'Add Category',
+  'noCategoriesAdded': 'No categories added yet',
+  'createYourFirstCategory':
+      'Create your first category to organize your costs',
 
   // Product Detail Screen
   'costReport': 'Cost Report',
   'salesReport': 'Sales Report',
+  'selectAction': 'Select action',
+  'detail': 'Detail',
+  'productDetails': 'Product Details',
+  'editPrice': 'Edit Price',
+  'priceUpdated': 'Price updated successfully',
 
   // Sales Report Screen
   'salesSummaryTitle': 'Sales Summary',
@@ -119,6 +174,8 @@ const enLocalization = {
   'no': 'No',
   'ok': 'OK',
   'select': 'Select',
+  'manage': 'Manage',
+  'selectCategory': 'Select Category',
   'search': 'Search',
   'filter': 'Filter',
   'sort': 'Sort',
@@ -128,5 +185,20 @@ const enLocalization = {
   'processing': 'Processing...',
   'pleaseWait': 'Please wait...',
   'noData': 'No data available',
+  'noDataYet': 'No data yet',
   'nothingHere': 'Nothing here',
+  'costDetails': 'Cost Details',
+  'totalRevenue': 'Total Revenue',
+  'totalUnits': 'Total Units',
+  'salesDetails': 'Sales Details',
+  'unitPrice': 'Unit Price',
+
+  // BEP Error & Validation
+  'errorCalculatingBep': 'Error Calculating BEP',
+  'retry': 'Retry',
+  'invalidPricing': 'Invalid Product Pricing',
+  'invalidPricingShort': 'Invalid Pricing',
+  'sellingPriceMustBeHigherThanVariableCost':
+      'Selling price must be higher than variable cost per unit',
+  'nameRequired': 'Product name is required',
 };

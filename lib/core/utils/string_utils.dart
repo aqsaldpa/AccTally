@@ -1,10 +1,12 @@
+import 'package:get/get.dart';
+
 String greeting() {
   var hour = DateTime.now().hour;
   if (hour < 12) {
-    return 'Morning';
+    return 'morning'.tr;
   }
   if (hour < 17) {
-    return 'Afternoon';
+    return 'afternoon'.tr;
   }
-  return 'Evening';
+  return 'evening'.tr;
 }

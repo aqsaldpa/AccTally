@@ -1,4 +1,5 @@
 import 'package:acctally/app/modules/onboarding/views/onboarding_screen.dart';
+import 'package:acctally/app/bindings/initial_bindings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,27 +19,32 @@ class AccTallyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: AppConstants.appName,
-          theme: AppTheme.getLightTheme(),
-          themeMode: ThemeMode.system,
-          home: child,
-          translations: LocalizationService(),
-          locale: LocalizationService.currentLocale,
-          fallbackLocale: LocalizationService.enLocale,
-          supportedLocales: const [
-            LocalizationService.enLocale,
-            LocalizationService.msLocale,
-          ],
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          onReady: () {
-            logger.info('App initialized and ready');
-          },
+        return SafeArea(
+          top: false,
+          bottom: true,
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: AppConstants.appName,
+            theme: AppTheme.getLightTheme(),
+            themeMode: ThemeMode.system,
+            home: child,
+            initialBinding: InitialBindings(),
+            translations: LocalizationService(),
+            locale: LocalizationService.currentLocale,
+            fallbackLocale: LocalizationService.enLocale,
+            supportedLocales: const [
+              LocalizationService.enLocale,
+              LocalizationService.msLocale,
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            onReady: () {
+              logger.info('App initialized and ready');
+            },
+          ),
         );
       },
       child: const OnboardingScreen(),

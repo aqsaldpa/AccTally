@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class FlushbarUtils {
@@ -9,12 +10,13 @@ class FlushbarUtils {
     _dismissPrevious();
     _currentFlushbar = Flushbar(
       title: title,
+      margin: const EdgeInsets.all(16),
       message: message,
+      borderRadius: BorderRadius.circular(8.r),
       backgroundColor: Colors.green,
       duration: const Duration(seconds: 3),
-      flushbarPosition: FlushbarPosition.TOP,
+      flushbarPosition: FlushbarPosition.BOTTOM,
       icon: const Icon(Icons.check_circle, color: Colors.white),
-      leftBarIndicatorColor: Colors.greenAccent,
     )..show(Get.context!);
   }
 
@@ -25,7 +27,9 @@ class FlushbarUtils {
       message: message,
       backgroundColor: Colors.red,
       duration: const Duration(seconds: 4),
-      flushbarPosition: FlushbarPosition.TOP,
+      borderRadius: BorderRadius.circular(8.r),
+      margin: const EdgeInsets.all(16),
+      flushbarPosition: FlushbarPosition.BOTTOM,
       icon: const Icon(Icons.error, color: Colors.white),
       leftBarIndicatorColor: Colors.redAccent,
     )..show(Get.context!);
@@ -37,8 +41,10 @@ class FlushbarUtils {
       title: title,
       message: message,
       backgroundColor: Colors.blue,
+      borderRadius: BorderRadius.circular(8.r),
       duration: const Duration(seconds: 3),
-      flushbarPosition: FlushbarPosition.TOP,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      margin: const EdgeInsets.all(16),
       icon: const Icon(Icons.info, color: Colors.white),
       leftBarIndicatorColor: Colors.lightBlue,
     )..show(Get.context!);
@@ -50,8 +56,10 @@ class FlushbarUtils {
       title: title ?? 'Peringatan',
       message: message,
       backgroundColor: Colors.orange,
+      borderRadius: BorderRadius.circular(8.r),
+      margin: const EdgeInsets.all(16),
       duration: const Duration(seconds: 3),
-      flushbarPosition: FlushbarPosition.TOP,
+      flushbarPosition: FlushbarPosition.BOTTOM,
       icon: const Icon(Icons.warning, color: Colors.white),
       leftBarIndicatorColor: Colors.orangeAccent,
     )..show(Get.context!);
@@ -64,7 +72,9 @@ class FlushbarUtils {
       message: message,
       backgroundColor: Colors.grey[700]!,
       duration: const Duration(hours: 1),
-      flushbarPosition: FlushbarPosition.TOP,
+      borderRadius: BorderRadius.circular(8.r),
+      margin: const EdgeInsets.all(16),
+      flushbarPosition: FlushbarPosition.BOTTOM,
       icon: const SizedBox(
         width: 20,
         height: 20,

@@ -1,8 +1,10 @@
 import 'package:acctally/core/constants/app_colors.dart';
-import 'package:acctally/app/models/cost_type.dart';
+import 'package:acctally/core/utils/flushbar_utils.dart';
+import 'package:acctally/app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 
 class ItemEditorBottomSheet extends StatefulWidget {
   final String title;
@@ -47,14 +49,10 @@ class ItemEditorBottomSheetState extends State<ItemEditorBottomSheet> {
     final isCostValid = !widget.includeCostType || selectedCostType != null;
 
     if (!isNameValid || !isCostValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            !isNameValid
-                ? 'Name is required'
-                : 'Please select cost type',
-          ),
-        ),
+      flush.showError(
+        (!isNameValid
+            ? 'nameIsRequired'
+            : 'selectCostType').tr,
       );
       return;
     }
@@ -83,7 +81,7 @@ class ItemEditorBottomSheetState extends State<ItemEditorBottomSheet> {
           TextField(
             controller: nameController,
             decoration: InputDecoration(
-              hintText: 'Name',
+              hintText: 'nameHint'.tr,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -92,7 +90,7 @@ class ItemEditorBottomSheetState extends State<ItemEditorBottomSheet> {
           if (widget.includeCostType) ...[
             Gap(12.h),
             DropdownButtonFormField<CostType>(
-              value: selectedCostType,
+              initialValue: selectedCostType,
               items: CostType.values
                   .map(
                     (e) => DropdownMenuItem(
@@ -103,7 +101,7 @@ class ItemEditorBottomSheetState extends State<ItemEditorBottomSheet> {
                   .toList(),
               onChanged: (v) => setState(() => selectedCostType = v),
               decoration: InputDecoration(
-                hintText: 'Cost type',
+                hintText: 'costTypeHint'.tr,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),
@@ -122,7 +120,7 @@ class ItemEditorBottomSheetState extends State<ItemEditorBottomSheet> {
                 ),
               ),
               child: Text(
-                'Save',
+                'saveButton'.tr,
                 style: TextStyle(color: Colors.white, fontSize: 16.sp),
               ),
             ),

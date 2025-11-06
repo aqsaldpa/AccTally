@@ -2,6 +2,7 @@ import 'package:acctally/app/modules/bep/views/bep_analysis_screen.dart';
 import 'package:acctally/app/modules/management/views/data_management_screen.dart';
 import 'package:acctally/app/modules/costs/views/enter_cost_screen.dart';
 import 'package:acctally/app/modules/sales/views/enter_sales_screen.dart';
+import 'package:acctally/app/data/controllers/dashboard_controller.dart';
 import 'package:acctally/core/constants/app_colors.dart';
 import 'package:acctally/core/constants/app_constants.dart';
 import 'package:acctally/core/localization/localization_service.dart';
@@ -12,73 +13,92 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends GetView<DashboardController> {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          backgroundGradient(),
-          Positioned(
-            top: 40.h,
-            right: 20.w,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => changeLanguage(context),
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.language,
-                          color: AppColors.primaryColor,
-                          size: 24.sp,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          // Refresh dashboard data when popping back with delay for db sync
+          Future.delayed(const Duration(milliseconds: 500), () {
+            controller.loadDashboard();
+          });
+        }
+      },
+      child: Scaffold(
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            );
+          }
+
+          return Stack(
+            children: [
+              backgroundGradient(),
+              Positioned(
+                top: 40.h,
+                right: 20.w,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => changeLanguage(context),
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 8.h,
                         ),
-                        SizedBox(width: 6.w),
-                        Text(
-                          LocalizationService.getCurrentLanguageCode()
-                              .toUpperCase(),
-                          style: TextStyle(
-                            color: AppColors.primaryColor,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.language,
+                              color: AppColors.primaryColor,
+                              size: 24.sp,
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              LocalizationService.getCurrentLanguageCode()
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 70.h),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  greetingSection(),
-                  bepTargetSection(),
-                  overallSummarySection(),
-                  dataSection(),
-                ],
+              Padding(
+                padding: EdgeInsets.only(top: 70.h),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      greetingSection(),
+                      bepTargetSection(),
+                      overallSummarySection(),
+                      dataSection(),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        }),
       ),
     );
   }
@@ -201,9 +221,7 @@ class HomeScreen extends StatelessWidget {
               ),
               Gap(35.h),
               buildBepTargetProgress(),
-              Gap(10.h),
-              buildBepTargetStatus(),
-              Gap(10.h),
+              Gap(20.h),
             ],
           ),
         ),
@@ -212,76 +230,144 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildBepTargetProgress() {
-    return Column(
-      children: [
-        Text(
-          'totalBepTarget'.tr,
-          style: TextStyle(
-            color: AppColors.blue,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Gap(10.h),
-        Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            LinearProgressIndicator(
-              value: 150 / 500,
-              borderRadius: BorderRadius.circular(10.r),
-              minHeight: 20.h,
-              backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+    return Obx(() {
+      final totalBepUnits = controller.getTotalBepUnits();
+      final totalUnitsSold = controller.getTotalUnitsSold();
+
+      // Progress bar menunjukkan total units sold (bisa melebihi 100% jika exceed BEP)
+      final progressValue = totalBepUnits > 0
+          ? (totalUnitsSold / totalBepUnits).clamp(0.0, 1.0)
+          : 0.0;
+
+      // Circle position menunjukkan di mana target BEP berada dalam konteks units sold
+      final circlePercentage = totalUnitsSold > 0
+          ? (totalBepUnits / totalUnitsSold).clamp(0.0, 1.0)
+          : 0.0;
+
+      return Column(
+        children: [
+          Text(
+            'totalBepTarget'.tr,
+            style: TextStyle(
+              color: AppColors.blue,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.bold,
             ),
-            Padding(
-              padding: EdgeInsets.only(left: (150 / 500) * 327.w),
-              child: Container(
-                width: 20.w,
-                height: 20.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.blue, width: 2.w),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Gap(10.h),
-        Text(
-          '500/150',
-          style: TextStyle(
-            color: AppColors.blue,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.bold,
           ),
-        ),
-      ],
-    );
+          Gap(10.h),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final progressBarWidth = constraints.maxWidth;
+              final circlePosition = (circlePercentage * progressBarWidth) - 12.w;
+
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 20.h,
+                    child: LinearProgressIndicator(
+                      value: progressValue,
+                      borderRadius: BorderRadius.circular(10.r),
+                      minHeight: 20.h,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+                    ),
+                  ),
+                  Positioned(
+                    left: circlePosition,
+                    top: -2.h,
+                    child: Container(
+                      width: 24.w,
+                      height: 24.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.blue, width: 2.w),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue.withValues(alpha: 0.3),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          Gap(10.h),
+          Text(
+            '${totalUnitsSold.toStringAsFixed(0)} / ${totalBepUnits.toStringAsFixed(0)} ${'unit'.tr}',
+            style: TextStyle(
+              color: AppColors.blue,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget buildBepTargetStatus() {
-    return Card(
-      color: AppColors.green,
-      child: SizedBox(
-        child: Padding(
-          padding: EdgeInsets.all(8.0.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${'status'.tr} : ${'profit'.tr}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Obx(() {
+      final totalCosts = controller.getTotalCosts();
+      final totalRevenue = controller.getTotalRevenue();
+
+      // If both are 0, show no data state
+      if (totalCosts == 0 && totalRevenue == 0) {
+        return Card(
+          color: Colors.grey[400],
+          child: SizedBox(
+            child: Padding(
+              padding: EdgeInsets.all(8.0.h),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${'status'.tr} : ${'noDataYet'.tr}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
+          ),
+        );
+      }
+
+      final isProfitable = controller.isOverallProfitable();
+      final statusColor = isProfitable ? AppColors.green : Colors.red;
+      final statusText = isProfitable ? 'profit'.tr : 'loss'.tr;
+
+      return Card(
+        color: statusColor,
+        child: SizedBox(
+          child: Padding(
+            padding: EdgeInsets.all(8.0.h),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${'status'.tr} : $statusText',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget overallSummarySection() {
@@ -299,29 +385,36 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Gap(15.h),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                summaryCard(
-                  title: 'totalCosts'.tr,
-                  value: 'RM 500.00',
-                  color: AppColors.purplePastel.withValues(alpha: 0.71),
-                ),
-                summaryCard(
-                  title: 'totalSalesAmount'.tr,
-                  value: 'RM 500.00',
-                  color: AppColors.bluepastel.withValues(alpha: 0.76),
-                ),
-                summaryCard(
-                  title: 'profitLoss'.tr,
-                  value: 'RM 500.00',
-                  color: AppColors.greenPastel.withValues(alpha: 0.76),
-                ),
-              ],
-            ),
-          ),
+          Obx(() {
+            final totalCosts = controller.getTotalCosts();
+            final totalRevenue = controller.getTotalRevenue();
+            final profitLoss = controller.getProfitLoss();
+
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  summaryCard(
+                    title: 'totalCosts'.tr,
+                    value: '${'currency'.tr} ${totalCosts.toStringAsFixed(2)}',
+                    color: AppColors.purplePastel.withValues(alpha: 0.71),
+                  ),
+                  summaryCard(
+                    title: 'totalSalesAmount'.tr,
+                    value:
+                        '${'currency'.tr} ${totalRevenue.toStringAsFixed(2)}',
+                    color: AppColors.bluepastel.withValues(alpha: 0.76),
+                  ),
+                  summaryCard(
+                    title: 'profitLoss'.tr,
+                    value: '${'currency'.tr} ${profitLoss.toStringAsFixed(2)}',
+                    color: AppColors.greenPastel.withValues(alpha: 0.76),
+                  ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -348,6 +441,11 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               dataCard(
+                title: 'management'.tr,
+                icon: AppConstants.iconManagement,
+                onTap: () => handleDataCardTap('management'),
+              ),
+              dataCard(
                 title: 'costs'.tr,
                 icon: AppConstants.iconCost,
                 onTap: () => handleDataCardTap('costs'),
@@ -356,11 +454,6 @@ class HomeScreen extends StatelessWidget {
                 title: 'sales'.tr,
                 icon: AppConstants.iconSales,
                 onTap: () => handleDataCardTap('sales'),
-              ),
-              dataCard(
-                title: 'management'.tr,
-                icon: AppConstants.iconManagement,
-                onTap: () => handleDataCardTap('management'),
               ),
               dataCard(
                 title: 'bepAnalysis'.tr,
