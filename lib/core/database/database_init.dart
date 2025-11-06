@@ -29,7 +29,7 @@ class DatabaseInit {
       );
 
       _isInitialized = true;
-      logger.info('Database initialized successfully');
+      logger.info('Database initialized successfully at: $path');
     } catch (e) {
       logger.error('Failed to initialize database', e);
       rethrow;

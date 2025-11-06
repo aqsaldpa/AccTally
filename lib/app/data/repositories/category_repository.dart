@@ -72,6 +72,7 @@ class CategoryRepository {
 
   Future<List<CategoryModel>> getByType(CostType costType) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'categories',
         where: 'cost_type = ?',
@@ -87,6 +88,7 @@ class CategoryRepository {
 
   Future<int> updateCategory(CategoryModel category) async {
     try {
+      if (database == null) return 0;
       final categoryWithTimestamp = category.copyWith(
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       );
@@ -107,6 +109,7 @@ class CategoryRepository {
 
   Future<int> deleteCategory(int id) async {
     try {
+      if (database == null) return 0;
       final count = await database.delete(
         'categories',
         where: 'id = ?',
@@ -122,6 +125,7 @@ class CategoryRepository {
 
   Future<int> getCategoryCount() async {
     try {
+      if (database == null) return 0;
       final result = await database.rawQuery('SELECT COUNT(*) as count FROM categories');
       return Sqflite.firstIntValue(result) ?? 0;
     } catch (e) {

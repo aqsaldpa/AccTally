@@ -258,7 +258,8 @@ class HomeScreen extends GetView<DashboardController> {
           LayoutBuilder(
             builder: (context, constraints) {
               final progressBarWidth = constraints.maxWidth;
-              final circlePosition = (circlePercentage * progressBarWidth) - 12.w;
+              final circlePosition =
+                  (circlePercentage * progressBarWidth) - 12.w;
 
               return Stack(
                 clipBehavior: Clip.none,

@@ -29,6 +29,7 @@ class SaleEntryRepository {
 
   Future<List<SaleEntryModel>> getAllSaleEntries() async {
     try {
+      if (database == null) return [];
       final maps = await database.query('sale_entries', orderBy: 'sale_date DESC');
       return List.generate(maps.length, (i) => SaleEntryModel.fromMap(maps[i]));
     } catch (e) {
@@ -39,6 +40,7 @@ class SaleEntryRepository {
 
   Future<SaleEntryModel?> getSaleEntryById(int id) async {
     try {
+      if (database == null) return null;
       final maps = await database.query(
         'sale_entries',
         where: 'id = ?',
@@ -55,6 +57,7 @@ class SaleEntryRepository {
 
   Future<List<SaleEntryModel>> getSaleEntriesForProduct(int productId) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'sale_entries',
         where: 'product_id = ?',
@@ -73,6 +76,7 @@ class SaleEntryRepository {
     int endDate,
   ) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'sale_entries',
         where: 'sale_date BETWEEN ? AND ?',

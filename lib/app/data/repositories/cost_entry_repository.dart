@@ -29,6 +29,7 @@ class CostEntryRepository {
 
   Future<List<CostEntryModel>> getAllCostEntries() async {
     try {
+      if (database == null) return [];
       final maps = await database.query('cost_entries', orderBy: 'cost_date DESC');
       return List.generate(maps.length, (i) => CostEntryModel.fromMap(maps[i]));
     } catch (e) {
@@ -39,6 +40,7 @@ class CostEntryRepository {
 
   Future<CostEntryModel?> getCostEntryById(int id) async {
     try {
+      if (database == null) return null;
       final maps = await database.query(
         'cost_entries',
         where: 'id = ?',
@@ -55,6 +57,7 @@ class CostEntryRepository {
 
   Future<List<CostEntryModel>> getCostEntriesForProduct(int productId) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'cost_entries',
         where: 'product_id = ?',
@@ -70,6 +73,7 @@ class CostEntryRepository {
 
   Future<List<CostEntryModel>> getCostEntriesByCategory(int categoryId) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'cost_entries',
         where: 'category_id = ?',
@@ -88,6 +92,7 @@ class CostEntryRepository {
     int endDate,
   ) async {
     try {
+      if (database == null) return [];
       final maps = await database.query(
         'cost_entries',
         where: 'cost_date BETWEEN ? AND ?',
